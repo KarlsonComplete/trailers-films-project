@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  php81-service:
+    build:
+      context: ./../
+      dockerfile: ./docker/php/Dockerfile
+    container_name: php81-container
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./../:/var/www/
+    networks:
+      - nginx-php81-pgsql
+  postgres:
+    image: postgres:15
+    container_name: pgsql15-container
+    ports:
+      - "65341:5432"
+    volumes:
+      - ./pgsql:/var/lib/pgsql/data:rw
+    restart: always
+    environment:
+      POSTGRES_DB: main
+      POSTGRES_USER: main
+      POSTGRES_PASSWORD: main
+    networks:
+      - nginx-php81-pgsql
+networks:
+  nginx-php81-pgsql:
+
+
