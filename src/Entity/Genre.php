@@ -21,9 +21,13 @@ class Genre
     #[ORM\OneToMany(mappedBy: 'genre', targetEntity: SubGenre::class, orphanRemoval: true)]
     private Collection $subgenres;
 
+    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'genres')]
+    private Collection $films;
+
     public function __construct()
     {
         $this->subgenres = new ArrayCollection();
+        $this->films = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -73,6 +77,33 @@ class Genre
             if ($subgenre->getGenre() === $this) {
                 $subgenre->setGenre(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Film>
+     */
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): static
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addGenre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilm(Film $film): static
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeGenre($this);
         }
 
         return $this;

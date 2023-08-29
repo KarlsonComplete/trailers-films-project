@@ -36,6 +36,7 @@ class SubGenreCrudController extends AbstractCrudController
     {
         yield TextField::new('title');
         yield AssociationField::new('genre');
+        yield AssociationField::new('films');
     }
 
 

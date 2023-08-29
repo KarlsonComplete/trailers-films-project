@@ -30,6 +30,8 @@ class FilmCrudController extends AbstractCrudController
         yield TextField::new('name');
         yield AssociationField::new('year');
         yield AssociationField::new('countries');
+        yield AssociationField::new('genres');
+        yield AssociationField::new('subGenres');
 
     }
 }

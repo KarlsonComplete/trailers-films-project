@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Year;
 use Doctrine\ORM\Mapping\Id;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -30,5 +31,6 @@ class YearCrudController extends AbstractCrudController
     {
         yield IdField::new('id');
         yield TextField::new('year');
+        yield AssociationField::new('films');
     }
 }

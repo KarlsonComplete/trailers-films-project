@@ -25,9 +25,17 @@ class Film
     #[ORM\JoinColumn(nullable: false)]
     private ?Year $year = null;
 
+    #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'films')]
+    private Collection $genres;
+
+    #[ORM\ManyToMany(targetEntity: SubGenre::class, inversedBy: 'films')]
+    private Collection $subGenres;
+
     public function __construct()
     {
         $this->countries = new ArrayCollection();
+        $this->genres = new ArrayCollection();
+        $this->subGenres = new ArrayCollection();
     }
     public function __toString(): string
     {
@@ -83,6 +91,54 @@ class Film
     public function setYear(?Year $year): static
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): static
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): static
+    {
+        $this->genres->removeElement($genre);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SubGenre>
+     */
+    public function getSubGenres(): Collection
+    {
+        return $this->subGenres;
+    }
+
+    public function addSubGenre(SubGenre $subGenre): static
+    {
+        if (!$this->subGenres->contains($subGenre)) {
+            $this->subGenres->add($subGenre);
+        }
+
+        return $this;
+    }
+
+    public function removeSubGenre(SubGenre $subGenre): static
+    {
+        $this->subGenres->removeElement($subGenre);
 
         return $this;
     }
