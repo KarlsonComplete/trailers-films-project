@@ -45,4 +45,14 @@ class SubGenreRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function SearchForIdenticalId($genre): array
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.genre = :genre')
+            ->setParameter('genre', $genre)
+            ->orderBy('g.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

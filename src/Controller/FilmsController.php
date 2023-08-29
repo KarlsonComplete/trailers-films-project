@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\SubGenreRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
@@ -18,10 +20,22 @@ class FilmsController extends AbstractController
     }
 
     #[Route('/films', name: 'app_main')]
-    public function index(Environment $twig, GenreRepository $genreRepository): Response
+    public function index(Request $request, GenreRepository $genreRepository, SubGenreRepository $subGenreRepository): Response
     {
-       return new Response($this->twig->render('films/index.html.twig', [
-           'genres' => $genreRepository->findAll(),
-       ]));
+        $genres = $genreRepository->findAll();
+
+        if ($request->isXmlHttpRequest()) {
+            if ($request->request->get('id_genre')) {
+                $subgenres = $subGenreRepository->SearchForIdenticalId($request->request->get('id_genre'));
+                return new Response($this->twig->render('films/select.html.twig', ['subgenres' => $subgenres]));
+            }
+        }
+
+        return $this->render('films/index.html.twig',
+            [
+                'genres' => $genres,
+            ]);
+
+
     }
 }

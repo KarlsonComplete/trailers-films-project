@@ -13,11 +13,11 @@
             </div>
             <div class="selection row py-lg-5">
                 <div class="col-md-3">
-                    <label for="country" class="form-label">Жанр</label>
-                    <select class="form-select" id="country" required="">
+                    <label for="genre" class="form-label">Жанр</label>
+                    <select class="form-select" id="genre" required="">
                         <option value="">Choose...</option>
                         {% for genre in genres %}
-                            <option>{{ genre }}</option>
+                            <option value="{{ genre.id }}">{{ genre }}</option>
                         {% endfor %}
                     </select>
                     <div class="invalid-feedback">
@@ -25,10 +25,9 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <label for="country" class="form-label">Поджанр</label>
-                    <select class="form-select" id="country" required="">
-                        <option value="">Choose...</option>
-                        <option>United States</option>
+                    <label for="subgenre" class="form-label">Поджанр</label>
+                    <select class="form-select" id="subgenre" name="subgenre" required="">
+                        <option>Choose...</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a valid country.
@@ -38,22 +37,41 @@
                     <label for="country" class="form-label">Страна</label>
                     <select class="form-select" id="country" required="">
                         <option value="">Choose...</option>
-                        <option>United States</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a valid country.
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <label for="country" class="form-label">Год</label>
-                    <select class="form-select" id="country" required="">
+                    <label for="year" class="form-label">Год</label>
+                    <select class="form-select" id="year" required="">
                         <option value="">Choose...</option>
-                        <option>United States</option>
+
                     </select>
                     <div class="invalid-feedback">
                         Please select a valid country.
                     </div>
                 </div>
+                <script>
+                    $("#genre").change(function () {
+                        var id_genre = $(this).val();
+                        var token = $("input[name='_token']").val();
+                        console.log(id_genre);
+
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: "films",
+                            method: 'POST',
+                            data: {id_genre: id_genre, _token:token},
+                            success: function (data) {
+                                $("#subgenre").empty()
+                                $("#subgenre").html(data);
+                            }
+                        });
+                    });
+                </script>
             </div>
         </section>
 
