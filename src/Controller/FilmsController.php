@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Repository\CountryRepository;
+use App\Repository\FilmRepository;
 use App\Repository\SubGenreRepository;
+use App\Repository\YearRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,9 +23,12 @@ class FilmsController extends AbstractController
     }
 
     #[Route('/films', name: 'app_main')]
-    public function index(Request $request, GenreRepository $genreRepository, SubGenreRepository $subGenreRepository): Response
+    public function index(Request $request, GenreRepository $genreRepository, SubGenreRepository $subGenreRepository, CountryRepository $countryRepository, YearRepository $yearRepository, FilmRepository $filmRepository): Response
     {
         $genres = $genreRepository->findAll();
+        $countries = $countryRepository->findAll();
+        $years = $yearRepository->findAll();
+        $films = $filmRepository->findAll();
 
         if ($request->isXmlHttpRequest()) {
             if ($request->request->get('id_genre')) {
@@ -34,6 +40,9 @@ class FilmsController extends AbstractController
         return $this->render('films/index.html.twig',
             [
                 'genres' => $genres,
+                'countries' => $countries,
+                'years' => $years,
+                'films' => $films,
             ]);
 
 

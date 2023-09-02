@@ -31,6 +31,12 @@ class Film
     #[ORM\ManyToMany(targetEntity: SubGenre::class, inversedBy: 'films')]
     private Collection $subGenres;
 
+    #[ORM\Column(length: 155, nullable: true)]
+    private ?string $pathPhoto = null;
+
+    #[ORM\Column(length: 455, nullable: true)]
+    private ?string $descriptionFilm = null;
+
     public function __construct()
     {
         $this->countries = new ArrayCollection();
@@ -142,4 +148,29 @@ class Film
 
         return $this;
     }
+
+    public function getPathPhoto(): ?string
+    {
+        return $this->pathPhoto;
+    }
+
+    public function setPathPhoto(?string $pathPhoto): static
+    {
+        $this->pathPhoto = $pathPhoto;
+
+        return $this;
+    }
+
+    public function getDescriptionFilm(): ?string
+    {
+        return $this->descriptionFilm;
+    }
+
+    public function setDescriptionFilm(?string $descriptionFilm): static
+    {
+        $this->descriptionFilm = $descriptionFilm;
+
+        return $this;
+    }
+
 }
