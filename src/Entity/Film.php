@@ -34,7 +34,7 @@ class Film
     #[ORM\Column(length: 155, nullable: true)]
     private ?string $pathPhoto = null;
 
-    #[ORM\Column(length: 455, nullable: true)]
+    #[ORM\Column(length: 1024, nullable: true)]
     private ?string $descriptionFilm = null;
 
     public function __construct()

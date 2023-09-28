@@ -45,4 +45,49 @@ class FilmRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function SearchForIdenticalId($year): array
+    {
+        return $this->createQueryBuilder('y')
+            ->andWhere('y.year = :year')
+            ->setParameter('year', $year)
+            ->orderBy('y.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /*
+    SELECT * FROM film
+    JOIN film_country fc on film.id = fc.film_id
+    JOIN film_genre fg on film.id = fg.film_id
+    JOIN film_sub_genre fsg on film.id = fsg.film_id
+    WHERE country_id=3 AND genre_id=3 AND sub_genre_id=8;
+    /*, $subgenre, $country, $year*/
+
+
+    public function SearchFilmForOptions($genre):array
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('r')
+            ->join('g.genres', 'r')
+            ->where('r.id = :genre')
+            ->setParameter('genre', $genre)
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    public function SearchFilmForOptionsTest2($genre,$subgenre):array
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('r')
+            ->join('g.genres', 'r')
+            ->where('r.id = :genre')
+            ->setParameter('genre', $genre)
+            ->addSelect('s')
+            ->join('g.subGenres','s')
+            ->andWhere('s.id = :subgenre')
+            ->setParameter('subgenre', $subgenre)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

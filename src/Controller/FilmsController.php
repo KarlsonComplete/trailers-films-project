@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 use App\Repository\GenreRepository;
 
+
 class FilmsController extends AbstractController
 {
     private Environment $twig;
@@ -30,13 +31,23 @@ class FilmsController extends AbstractController
         $years = $yearRepository->findAll();
         $films = $filmRepository->findAll();
 
+        if(!empty($request->request))
+        {
+            var_dump($request->request);
+            $genre = $request->request->get('genre');
+            $subgenre = $request->request->get('subgenre');
+            $country = $request->request->get('country');
+            $year = $request->request->get('year');
+            $filmsForOptions = $filmRepository->SearchFilmForOptions($genre, $subgenre);
+            var_dump($filmsForOptions);
+
+        }
         if ($request->isXmlHttpRequest()) {
             if ($request->request->get('id_genre')) {
                 $subgenres = $subGenreRepository->SearchForIdenticalId($request->request->get('id_genre'));
                 return new Response($this->twig->render('films/select.html.twig', ['subgenres' => $subgenres]));
             }
         }
-
         return $this->render('films/index.html.twig',
             [
                 'genres' => $genres,
