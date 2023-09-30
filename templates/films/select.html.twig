@@ -1,7 +1,6 @@
 {% if subgenres is not null %}
-
+    <option value="">Choose...</option>
     {% for subgenre in subgenres %}
-
         <option value="{{ subgenre.id }}">{{ subgenre.title }}</option>
     {% endfor %}
 {% endif %}

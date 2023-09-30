@@ -12,11 +12,10 @@
                     сайты в поисках чего-нибудь интересного?</p>
                 Коллекция постоянно пополняется как новыми фильмами, так и признанными шедеврами прошлых лет!
             </div>
-            <form action="films" method="post">
                 <div class="selection row py-lg-5">
                     <div class="col-md-3">
                         <label for="genre" class="form-label">Жанр</label>
-                        <select class="form-select" id="genre" name="genre" required="">
+                        <select class="form-select" id="genre" name="genre">
                             <option value="">Choose...</option>
                             {% for genre in genres %}
                                 <option value="{{ genre.id }}">{{ genre }}</option>
@@ -29,7 +28,7 @@
                     <div class="col-md-3">
                         <label for="subgenre" class="form-label">Поджанр</label>
                         <select class="form-select" id="subgenre" name="subgenre">
-                            <option>Choose...</option>
+                            <option value="">Choose...</option>
                         </select>
                         <div class="invalid-feedback">
                             Please select a valid country.
@@ -37,7 +36,7 @@
                     </div>
                     <div class="col-md-3">
                         <label for="country" class="form-label">Страна</label>
-                        <select class="form-select" id="country" name="country" required="">
+                        <select class="form-select" id="country" name="country">
                             <option value="">Choose...</option>
                             {% for country in countries %}
                                 <option value="{{ country.id }}">{{ country }}</option>
@@ -59,30 +58,7 @@
                             Please select a valid country.
                         </div>
                     </div>
-
-                    <script>
-                        $("#genre").change(function () {
-                            var id_genre = $(this).val();
-                            var token = $("input[name='_token']").val();
-                            console.log(id_genre);
-
-                            $.ajax({
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                url: "films",
-                                method: 'POST',
-                                data: {id_genre: id_genre, _token: token},
-                                success: function (data) {
-                                    $("#subgenre").empty()
-                                    $("#subgenre").html(data);
-                                }
-                            });
-                        });
-                    </script>
                 </div>
-                <input class="btn btn-primary" type="submit" value="Искать">
-            </form>
         </section>
 
         <div class="album py-5 bg-body-tertiary">
@@ -114,28 +90,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                {# <script>
-                    $("#year").change(function () {
-                        var id_year = $(this).val();
-                        var token = $("input[name='_token']").val();
-                        console.log(id_year);
-
-                        $.ajax({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            url: "films",
-                            method: 'POST',
-                            data: {id_year: id_year, _token: token},
-                            success: function (data) {
-                                $("#films").empty()
-                                $("#films").html(data);
-                            }
-                        });
-                    });
-                </script> #}
             </div>
         </div>
-
     </main>
 {% endblock %}
