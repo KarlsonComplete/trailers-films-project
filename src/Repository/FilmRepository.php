@@ -46,7 +46,7 @@ class FilmRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function SearchForIdenticalId($year): array
+    public function SearchFilmForOptionYear($year): array
     {
         return $this->createQueryBuilder('y')
             ->andWhere('y.year = :year')
@@ -65,7 +65,7 @@ class FilmRepository extends ServiceEntityRepository
     /*, $subgenre, $country, $year*/
 
 
-    public function SearchFilmForOptions($genre):array
+    public function SearchFilmForOptionGenre($genre):array
     {
         return $this->createQueryBuilder('g')
             ->addSelect('r')
@@ -76,7 +76,7 @@ class FilmRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
-    public function SearchFilmForOptionsTest2($genre,$subgenre):array
+    public function SearchFilmForOptionsGenreAndSubgenre($genre, ?string $subgenre = null):array
     {
         return $this->createQueryBuilder('g')
             ->addSelect('r')
@@ -90,4 +90,27 @@ class FilmRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+    public function SearchFilmForOptionsAll($genre,$subgenre, $country, $year):array
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('r')
+            ->join('g.genres', 'r')
+            ->where('r.id = :genre')
+            ->setParameter('genre', $genre)
+            ->addSelect('s')
+            ->join('g.subGenres','s')
+            ->andWhere('s.id = :subgenre')
+            ->setParameter('subgenre', $subgenre)
+            ->addSelect('c')
+            ->join('c.countries', 'c')
+            ->where('c.id = :country')
+            ->setParameter('country', $country)
+            ->addSelect('y')
+            ->join('g.year', 'y')
+            ->where('y.id = :year')
+            ->setParameter('year', $year)
+            ->getQuery()
+            ->getArrayResult();
+    }
+
 }

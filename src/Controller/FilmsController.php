@@ -7,6 +7,7 @@ use App\Repository\FilmRepository;
 use App\Repository\SubGenreRepository;
 use App\Repository\YearRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,8 @@ class FilmsController extends AbstractController
     }
 
     #[Route('/films', name: 'app_main')]
-    public function index(Request $request, GenreRepository $genreRepository, SubGenreRepository $subGenreRepository, CountryRepository $countryRepository, YearRepository $yearRepository, FilmRepository $filmRepository): Response
+    public function index(Request           $request, GenreRepository $genreRepository, SubGenreRepository $subGenreRepository,
+                          CountryRepository $countryRepository, YearRepository $yearRepository, FilmRepository $filmRepository): Response
     {
         $genres = $genreRepository->findAll();
         $countries = $countryRepository->findAll();
@@ -33,21 +35,26 @@ class FilmsController extends AbstractController
 
 
         if ($request->isXmlHttpRequest()) {
-            if ($request->request->get('id_genre') && $request->request->get('id_subgenre') )
-            {
-
-                $films = $filmRepository->SearchFilmForOptionsTest2($request->request->get('id_genre'),$request->request->get('id_subgenre'));
-                return new Response($this->twig->render('films/select.films.html.twig',['films' => $films]));
-
+            if ($request->request->get('id_genre') && $request->request->get('id_subgenre') && $request->request->get('id_country') && $request->request->get('id_year')) {
+                $films = $filmRepository->SearchFilmForOptionsAll($request->request->get('id_genre'), $request->request->get('id_subgenre'),
+                    $request->request->get('id_country'), $request->request->get('id_year'));
+                return new Response($this->twig->render('films/select.films.html.twig', ['films' => $films]));
             }
+            if ($request->request->get('id_genre') && $request->request->get('id_subgenre')) {
+                $films = $filmRepository->SearchFilmForOptionsGenreAndSubgenre($request->request->get('id_genre'), $request->request->get('id_subgenre'));
+                return new Response($this->twig->render('films/select.films.html.twig', ['films' => $films]));
+            }
+
             if ($request->request->get('id_genre')) {
                 $subgenres = $subGenreRepository->SearchForIdenticalId($request->request->get('id_genre'));
-                return new Response($this->twig->render('films/select.html.twig', ['subgenres' => $subgenres]));
+                $films = $filmRepository->SearchFilmForOptionGenre($request->request->get('id_genre'));
+                $mas = [$this->renderView('films/select.html.twig', ['subgenres' => $subgenres]),
+                    $this->renderView('films/select.films.html.twig', ['films' => $films])];
+                return new JsonResponse($mas);
             }
-            if ($request->request->get('id_year'))
-            {
-                $films = $filmRepository->SearchForIdenticalId($request->request->get('id_year'));
-                return new Response($this->twig->render('films/select.films.html.twig',['films' => $films]));
+            if ($request->request->get('id_year')) {
+                $films = $filmRepository->SearchFilmForOptionYear($request->request->get('id_year'));
+                return new Response($this->twig->render('films/select.films.html.twig', ['films' => $films]));
             }
         }
 
@@ -58,7 +65,5 @@ class FilmsController extends AbstractController
                 'years' => $years,
                 'films' => $films,
             ]);
-
-
     }
 }
